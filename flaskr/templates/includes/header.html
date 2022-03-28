@@ -1,0 +1,48 @@
+<nav class="py-2 bg-light border-bottom">
+<div class="container d-flex flex-wrap">
+  <ul class="nav me-auto">
+    <li class="nav-item"><a href="{{ url_for('homepage') }}" class="nav-link link-dark px-2 active"
+        {% if self_url == 'homepage' %}aria-current="page"{% endif %}
+    >Home</a></li>
+    <li class="nav-item"><a href="{{ url_for('hotel.hotels') }}" class="nav-link link-dark px-2">View Hotels</a></li>
+    <li class="nav-item"><a href="#" class="nav-link link-dark px-2">Pricing</a></li>
+    <li class="nav-item"><a href="#" class="nav-link link-dark px-2">FAQs</a></li>
+    <li class="nav-item"><a href="#" class="nav-link link-dark px-2">About</a></li>
+  </ul>
+  <ul class="nav">
+    {% if g.user %}
+        <li class="nav-item">
+            <span class="nav-link link-dark">Hello {{ g.user.username }}</span>
+        </li>
+    {% else %}
+        <li class="nav-item"><a href="{{ url_for('auth.login') }}" class="nav-link link-dark px-2">Login</a></li>
+        <li class="nav-item"><a href="{{ url_for('auth.register') }}" class="nav-link link-dark px-2">Sign up</a></li>
+    {% endif %}
+  </ul>
+</div>
+</nav>
+<header class="py-3 mb-4 border-bottom">
+    <div class="container d-flex flex-wrap justify-content-center">
+        <a href="/" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-dark text-decoration-none">
+            <svg class="bi me-2" width="40" height="32"></svg>
+            <span class="fs-4">Settler</span>
+        </a>
+        <form action="#" method="GET" class="col-12 col-lg-auto mb-3 mb-lg-0 me-2">
+            <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+        </form>
+        {% if g.user %}
+        <div class="dropdown text-end">
+            <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="user-menu" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+            </a>
+            <ul class="dropdown-menu text-small" aria-labelledby="user-menu">
+                <li><a class="dropdown-item" href="#">New project...</a></li>
+                <li><a class="dropdown-item" href="#">Settings</a></li>
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Sign out</a></li>
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</header>

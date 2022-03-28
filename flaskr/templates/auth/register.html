@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+{% endblock %}
+
+{% block body %}
+<main class="form-signin text-center">
+  <form method="post">
+    <img class="mb-4" src="https://getbootstrap.com/docs/5.1/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
+    <h1 class="h3 mb-3 fw-normal">Sign up</h1>
+
+    <div class="form-floating">
+      <input name="username" type="text" class="form-control form-control-start" id="username" placeholder="JohnDoe">
+      <label for="username">Username</label>
+    </div>
+    <div class="form-floating">
+      <input name="email" type="email" class="form-control form-control-middle" id="email" placeholder="name@example.com">
+      <label for="email">Email</label>
+    </div>
+    <div class="form-floating">
+      <input name="password" type="password" class="form-control form-control-middle" id="password" placeholder="Password">
+      <label for="password">Password</label>
+    </div>
+    <div class="form-floating">
+      <input name="confirm_password" type="password" class="form-control form-control-end" id="confirm_password" placeholder="Password">
+      <label for="confirm_password">Confirm Password</label>
+    </div>
+    <div class="my-2">
+        Don't have an account? <a href="{{ url_for('auth.register') }}">Sign up</a>
+    </div>
+{#    <div class="checkbox mb-3">#}
+{#      <label>#}
+{#        <input class="form-check-input" type="checkbox" value="remember-me"> Remember me#}
+{#      </label>#}
+{#    </div>#}
+    <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+    <p class="mt-5 mb-3 text-muted">&copy; 2017–2022</p>
+  </form>
+</main>
+
+
+{% endblock %}
