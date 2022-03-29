@@ -5,6 +5,10 @@
 {% block body %}
     <div class="container">
     <h1>Hotels</h1>
-
+    <div class="grid">
+        {% for hotel in hotels %}
+            {{ loop.index }}
+        {% endfor %}
+    </div>
     </div>
 {% endblock %}

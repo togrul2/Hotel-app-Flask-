@@ -8,6 +8,9 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
+    if g.user is not None:
+        return redirect(url_for('homepage'))
+
     if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
@@ -43,6 +46,9 @@ def register():
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
+    if g.user is not None:
+        return redirect(url_for('homepage'))
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -67,13 +73,6 @@ def login():
     return render_template('auth/login.html')
 
 
-@bp.route('/logout')
-def logout():
-    session.clear()
-    # TODO: should redirect to the current page through query parameter
-    return redirect(url_for('homepage'))
-
-
 @bp.before_app_request
 def load_logged_in_user():
     user_id = session.get('user_id')
@@ -85,10 +84,31 @@ def load_logged_in_user():
         ).fetchone()
 
 
-def login_required(view):
+def is_loggedIn(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
+            return redirect(url_for('auth.login'))
+
+        return view(**kwargs)
+
+    return wrapped_view
+
+
+@bp.route('/logout')
+@is_loggedIn
+def logout():
+    args = request.args
+    redirect_link = args.get('next', 'homepage')
+    session.clear()
+    return redirect(redirect_link)
+
+
+def is_admin(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None or bool(g.user['isAdmin']) is False:
+            flash('You need to be authorized as an admin for this action', category='danger')
             return redirect(url_for('auth.login'))
 
         return view(**kwargs)

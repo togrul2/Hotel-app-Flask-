@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Create a hotel{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <form method="post">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Hotel name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Badamdar plaza">
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" name="description" id="description" cols="30" rows="10" placeholder="Description"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="location">Location</label>
+                    <input class="form-control" type="text" name="location" id="location" placeholder="Location">
+                </div>
+                <a class="btn btn-outline-primary" href="{{ url_for('homepage') }}">Cancel</a>
+                <input class="btn btn-primary" type="submit" value="Create">
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

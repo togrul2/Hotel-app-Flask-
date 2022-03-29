@@ -1,5 +1,4 @@
 import sqlite3
-
 import click
 from flask import current_app, g
 from flask.cli import with_appcontext
@@ -17,6 +16,9 @@ def get_db():
 
 
 def close_db(e=None):
+    if e is not None:
+        pass
+
     db = g.pop('db', None)
 
     if db is not None:

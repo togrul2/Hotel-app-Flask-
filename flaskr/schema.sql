@@ -1,7 +1,8 @@
 DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS post;
 DROP TABLE IF EXISTS hotel;
 DROP TABLE IF EXISTS hotel_image;
+DROP TABLE IF EXISTS hotel_service;
+DROP TABLE IF EXISTS booking;
 DROP TABLE IF EXISTS review;
 
 CREATE TABLE user (
@@ -11,15 +12,6 @@ CREATE TABLE user (
     email VARCHAR(50),
     password TEXT NOT NULL,
     isAdmin boolean NOT NULL DEFAULT false
-);
-
-CREATE TABLE post (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    author_id INTEGER NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    title TEXT NOT NULL,
-    body TEXT NOT NULL,
-    FOREIGN KEY (author_id) REFERENCES user (id)
 );
 
 CREATE TABLE hotel (
