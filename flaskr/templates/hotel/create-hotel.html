@@ -8,7 +8,7 @@
             <form method="post">
                 <div class="mb-3">
                     <label for="name" class="form-label">Hotel name</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Badamdar plaza">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Badamdar plaza" required>
                 </div>
                 <div class="mb-3">
                     <label for="description" class="form-label">Description</label>
@@ -16,7 +16,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="location">Location</label>
-                    <input class="form-control" type="text" name="location" id="location" placeholder="Location">
+                    <input class="form-control" type="text" name="location" id="location" placeholder="Location" required>
                 </div>
                 <a class="btn btn-outline-primary" href="{{ url_for('homepage') }}">Cancel</a>
                 <input class="btn btn-primary" type="submit" value="Create">

@@ -2,13 +2,29 @@
 
 {% block title %}Hotels{% endblock %}
 
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/hotels.css') }}">
+{% endblock %}
+
 {% block body %}
-    <div class="container">
+<div class="container">
     <h1>Hotels</h1>
-    <div class="grid">
+    <div class="custom-grid">
         {% for hotel in hotels %}
-            {{ loop.index }}
+
+            <div class="card" style="width: 18rem;">
+                <svg class="bd-placeholder-img card-img-top" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image cap" preserveAspectRatio="xMidYMid slice" focusable="false">
+                    <title>Placeholder</title>
+                    <rect width="100%" height="100%" fill="#868e96"></rect>
+                    <text x="25%" y="50%" fill="#dee2e6" dy=".3em">{{ hotel.name }}</text>
+                </svg>
+              <div class="card-body">
+                <h5 class="card-title">{{ hotel.name }}</h5>
+                <p class="card-text">{{ hotel.description }}</p>
+                <a href="#" class="btn btn-primary">View</a>
+              </div>
+            </div>
         {% endfor %}
     </div>
-    </div>
+</div>
 {% endblock %}

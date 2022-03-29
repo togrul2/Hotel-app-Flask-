@@ -8,7 +8,12 @@ bp = Blueprint('hotel', __name__)
 
 @bp.route('/hotels/')
 def hotels():
-    return render_template('hotel/hotels.html')
+    db = get_db()
+    hotels_collection = db.execute("SELECT * FROM hotel").fetchall()
+    data = {
+        'hotels': hotels_collection
+    }
+    return render_template('hotel/hotels.html', **data)
 
 
 @bp.route('/create-hotel', methods=['GET', 'POST'])
@@ -19,8 +24,8 @@ def create_hotel():
         description = request.form['description']
         location = request.form['location']
 
-        if not (name and description and location):
-            abort(400, "All the fields must be filled")
+        if not (name and location):
+            abort(400, "All required fields must be filled")
 
         try:
             db = get_db()
