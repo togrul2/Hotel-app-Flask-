@@ -46,6 +46,7 @@ def register():
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
+    redirect_link = url_for('homepage')
     if g.user is not None:
         return redirect(url_for('homepage'))
 
@@ -66,7 +67,9 @@ def login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
-            return redirect(url_for('homepage'))
+            if user['isAdmin']:
+                redirect_link = url_for('admin.dashboard')
+            return redirect(redirect_link)
 
         flash(message=error, category='danger')
 
@@ -84,7 +87,7 @@ def load_logged_in_user():
         ).fetchone()
 
 
-def is_loggedIn(view):
+def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
@@ -96,15 +99,15 @@ def is_loggedIn(view):
 
 
 @bp.route('/logout')
-@is_loggedIn
+@login_required
 def logout():
     args = request.args
-    redirect_link = args.get('next', 'homepage')
+    redirect_link = args.get('next', url_for('homepage'))
     session.clear()
     return redirect(redirect_link)
 
 
-def is_admin(view):
+def admin_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None or bool(g.user['isAdmin']) is False:

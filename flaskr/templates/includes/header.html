@@ -36,7 +36,9 @@
                 <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
             </a>
             <ul class="dropdown-menu text-small" aria-labelledby="user-menu">
-                <li><a class="dropdown-item" href="{{ url_for('hotel.create_hotel') }}">Add hotel</a></li>
+                {% if g.user['isAdmin'] %}
+                    <li><a class="dropdown-item" href="{{ url_for('admin.dashboard') }}">Admin panel</a></li>
+                {% endif %}
                 <li><a class="dropdown-item" href="#">Settings</a></li>
                 <li><a class="dropdown-item" href="#">Profile</a></li>
                 <li><hr class="dropdown-divider"></li>

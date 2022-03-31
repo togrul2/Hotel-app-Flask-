@@ -26,5 +26,24 @@
             </div>
         {% endfor %}
     </div>
+    {% if num_of_pages > 1 %}
+    <nav class="mt-3" aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        {% if page != 1 %}
+        <li class="page-item">
+            <a class="page-link">Previous</a>
+        </li>
+        {% endif %}
+        {% for page in range(1, num_of_pages + 1) %}
+        <li class="page-item"><a class="page-link" href="{{ url_for('hotel.hotels', page=page, per_page=request.args.get(per_page, 4)) }}">{{ page }}</a></li>
+        {% endfor %}
+        {% if page != num_of_pages %}
+        <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
 </div>
 {% endblock %}

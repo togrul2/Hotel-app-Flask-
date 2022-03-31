@@ -1,0 +1,40 @@
+{% extends 'admin/index.html' %}
+{% block title %}Create superuser{% endblock %}
+
+{% block body %}
+<div class="content-wrapper">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Create Hotel</h4>
+            <form class="forms-sample" method="post">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input class="form-control" id="username" name="username" placeholder="Username" type="text">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input class="form-control" id="email" name="email" placeholder="Email" type="email"/>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input class="form-control" id="password" name="password" placeholder="Password" type="password">
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm Password" type="password">
+                </div>
+                <div class="form-check form-check-flat form-check-primary">
+                    <label class="form-check-label">
+                        <input value="true" name="is_admin" type="checkbox" class="form-check-input" checked>
+                        Is admin
+                        <i class="input-helper"></i>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <input class="float-end btn btn-primary" type="submit" value="Create">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
