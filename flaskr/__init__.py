@@ -1,7 +1,7 @@
 import os
 from . import db, auth, hotel, config, admin
 from flask import Flask, render_template
-
+from flask_wtf.csrf import CSRFProtect
 from .db import get_db
 
 
@@ -40,6 +40,9 @@ def create_app(test_config=None):
 
     app.register_error_handler(404, page_not_found)
     # app.register_error_handler(500, internal_server_error)
+
+    csrf = CSRFProtect()
+    csrf.init_app(app)
 
     @app.route('/')
     def homepage():

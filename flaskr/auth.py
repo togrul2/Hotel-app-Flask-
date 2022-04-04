@@ -26,6 +26,11 @@ def register():
         if password != confirm_password:
             error = 'Passwords do not match.'
 
+        usernames = [i['upper_username'] for i in db.execute('SELECT upper(username) upper_username FROM user').fetchall()]
+
+        if username.upper() in usernames:
+            error = f'User with the username {username} already exists'
+
         if error is None:
             try:
                 db.execute(
@@ -33,6 +38,7 @@ def register():
                     (username, email, generate_password_hash(password)),
                 )
                 db.commit()
+                pass
             except db.IntegrityError:
                 error = f"User {username} is already registered."
             else:

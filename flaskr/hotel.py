@@ -1,5 +1,5 @@
 import math
-from flask import Blueprint, render_template, request, current_app
+from flask import Blueprint, render_template, request
 from flaskr.db import get_db
 
 bp = Blueprint('hotel', __name__)

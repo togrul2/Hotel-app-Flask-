@@ -31,7 +31,7 @@ def hotels():
 
 @bp.route('/hotel-delete/<int:pk>')
 @admin_required
-def hotel_delete(pk):
+def delete_hotel(pk):
     db = get_db()
     db.execute('DELETE FROM hotel WHERE id=?', (pk,))
     db.commit()
@@ -65,7 +65,8 @@ def create_hotel():
                     if image.filename != '':
                         filename = f'{hotel_id}.{secure_filename(image.filename)}'
                         image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-                        db.execute("INSERT INTO hotel_image(hotel_id, source, description) VALUES (?, ?, ?)", (hotel_id, filename, ''))
+                        db.execute("INSERT INTO hotel_image(hotel_id, source, description) VALUES (?, ?, ?)",
+                                   (hotel_id, filename, ''))
             db.commit()
         except IntegrityError as e:
             flash(str(e), 'danger')
@@ -111,9 +112,14 @@ def create_superuser():
         if password != confirm_password:
             error = 'Passwords do not match'
 
+        usernames = db.execute('SELECT upper(username) FROM user').fetchall()
+        if username.upper() in usernames:
+            error = f'User with the username {username} already exists'
+
         if error is None:
             try:
-                db.execute('INSERT INTO user(username, email, password, isAdmin) values (?, ?, ?, ?)', (username, email, password, is_admin))
+                db.execute('INSERT INTO user(username, email, password, isAdmin) values (?, ?, ?, ?)',
+                           (username, email, password, is_admin))
                 db.commit()
             except IntegrityError:
                 error = f'User with the username {username} already exists'
@@ -123,3 +129,13 @@ def create_superuser():
 
         flash(error)
     return render_template('admin/create-superuser.html')
+
+
+@bp.route('/edit_user/<int:pk>', methods=['GET', 'POST'])
+@admin_required
+def edit_superuser(pk):
+    db = get_db()
+    user_to_edit = db.execute("SELECT username, email, isAdmin FROM user WHERE id=?", (pk,)).fetchone()
+    context = {'user': user_to_edit}
+
+    return render_template('admin/edit-superuser.html', **context)
