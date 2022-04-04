@@ -2,6 +2,8 @@ import os
 from . import db, auth, hotel, config, admin
 from flask import Flask, render_template
 
+from .db import get_db
+
 
 def create_app(test_config=None):
     # create and configure the app
@@ -9,8 +11,16 @@ def create_app(test_config=None):
     app.config.from_object(config.DevConfig)
     app.config.from_mapping(
         DATABASE=os.path.join(app.instance_path, 'flaskr.db'),
-        UPLOAD_FOLDER=os.path.join(app.instance_path, 'uploads')
+        UPLOAD_FOLDER=os.path.join(app.static_folder, 'uploads'),
+        MAX_CONTENT_PATH=4096
     )
+
+    @app.context_processor
+    def utility_processor():
+        def getImages(hotel_id):
+            _db = get_db()
+            return _db.execute('SELECT * FROM hotel_image WHERE hotel_id=?', (hotel_id,)).fetchall()
+        return dict(getImages=getImages)
 
     if test_config is None:
         # load the instance config, if it exists, when not testing

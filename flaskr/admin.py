@@ -1,6 +1,9 @@
+import os
 from sqlite3 import IntegrityError
-
+from flask import current_app
 from flask import Blueprint, render_template, redirect, url_for, request, abort, flash
+from werkzeug.utils import secure_filename
+
 from flaskr.auth import admin_required
 from flaskr.db import get_db
 
@@ -40,18 +43,32 @@ def hotel_delete(pk):
 @admin_required
 def create_hotel():
     if request.method == 'POST':
-        name = request.form['name']
-        description = request.form['description']
-        location = request.form['location']
+        name = request.form.get('name')
+        description = request.form.get('description')
+        location = request.form.get('location')
+        images = request.files.getlist('images')
 
         if not (name and location):
             abort(400, "All required fields must be filled")
         try:
             db = get_db()
             db.execute("INSERT INTO hotel(name, description, location) VALUES (?, ? ,?)", (name, description, location))
+            if len(images) > 0:
+                hotel_id = db.execute("""
+                    SELECT id
+                    FROM hotel
+                    WHERE name=?
+                    AND description=?
+                    AND location=?
+                """, (name, description, location)).fetchone()[0]
+                for image in images:
+                    if image.filename != '':
+                        filename = f'{hotel_id}.{secure_filename(image.filename)}'
+                        image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+                        db.execute("INSERT INTO hotel_image(hotel_id, source, description) VALUES (?, ?, ?)", (hotel_id, filename, ''))
             db.commit()
         except IntegrityError as e:
-            print(e)
+            flash(str(e), 'danger')
 
         return redirect(url_for('admin.hotels'))
 

@@ -1,2 +1,3 @@
 instance/flaskr.db
 __pycache__
+flaskr/static/uploads/*
