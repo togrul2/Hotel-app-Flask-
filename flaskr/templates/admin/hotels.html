@@ -27,7 +27,7 @@
             <td>{{ hotel.location|truncate(20) }}</td>
             <td>
               <div class="btn-group">
-                <a href="#" class="btn btn-primary"><i class="mdi mdi-border-color"></i></a>
+                <a href="{{ url_for('admin.edit_hotel', pk=hotel['id']) }}" class="btn btn-primary"><i class="mdi mdi-border-color"></i></a>
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete_modal_{{hotel.id}}"><i class="mdi mdi-delete"></i></button>
               </div>
             </td>
@@ -57,13 +57,19 @@
         </tbody>
       </table>
     </div>
-    </div>
-  <div class="btn-group align-self-center">
-    <button class="btn btn-primary">Previous</button>
-    <button class="btn btn-primary">1</button>
-    <button class="btn btn-primary">2</button>
-    <button class="btn btn-primary">3</button>
-    <button class="btn btn-primary">Next</button>
   </div>
+  {% if num_of_pages > 1 %}
+  <div class="btn-group align-self-center">
+    {% if page != 1 %}
+    <a href="{{ url_for('admin.hotels', page=request.args.get('page')|int - 1, per_page=request.args.get('per_page')) }}" class="btn btn-primary">Previous</a>
+    {% endif %}
+    {% for i in range(1, num_of_pages + 1) %}
+    <a href="{{ url_for('admin.hotels', page=i, per_page=request.args.get('per_page')) }}" class="btn btn-primary">{{ i }}</a>
+    {% endfor %}
+    {% if page != num_of_pages %}
+    <a href="{{ url_for('admin.hotels', page=request.args.get('page')|int + 1, per_page=request.args.get('per_page')) }}" class="btn btn-primary">Next</a>
+    {% endif %}
+  </div>
+  {% endif %}
 </div>
 {% endblock %}

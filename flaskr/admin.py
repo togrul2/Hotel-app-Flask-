@@ -1,9 +1,9 @@
+import math
 import os
 from sqlite3 import IntegrityError
-from flask import current_app
+from flask import current_app, jsonify
 from flask import Blueprint, render_template, redirect, url_for, request, abort, flash
 from werkzeug.utils import secure_filename
-
 from flaskr.auth import admin_required
 from flaskr.db import get_db
 
@@ -19,12 +19,18 @@ def dashboard():
 @bp.route('/hotels')
 @admin_required
 def hotels():
-    # TODO implement pagination
     db = get_db()
-    hotel_models = db.execute("SELECT * FROM hotel")
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+    num_of_hotels = db.execute("SELECT COUNT(*) FROM hotel").fetchone()[0]
+    num_of_pages = math.ceil(num_of_hotels / per_page)
+    offset = (page - 1) * per_page
+    hotel_models = db.execute("SELECT * FROM hotel LIMIT ? OFFSET ?", (per_page, offset)).fetchall()
 
     data = {
-        'hotels': hotel_models
+        'hotels': hotel_models,
+        'page': page,
+        'num_of_pages': num_of_pages
     }
     return render_template('admin/hotels.html', **data)
 
@@ -76,6 +82,29 @@ def create_hotel():
     return render_template('admin/create-hotel.html')
 
 
+@bp.route('/edit-hotel/<int:pk>', methods=['GET', 'POST'])
+@admin_required
+def edit_hotel(pk):
+    db = get_db()
+    hotel = db.execute('SELECT * FROM hotel WHERE id=?', (pk,)).fetchone()
+    images = db.execute('SELECT * FROM hotel_image WHERE hotel_id=?', (pk,)).fetchall()
+    context = {
+        'hotel': hotel,
+        'images': images
+    }
+    if request.method == 'POST':
+        pass
+    return render_template('admin/edit_hotel.html', **context)
+
+
+@bp.route('/delete-image/<int:pk>', methods=['DELETE'])
+def delete_image(pk):
+    db = get_db()
+    db.execute('DELETE FROM hotel_image WHERE id=?', (pk, ))
+    db.commit()
+    return jsonify({'status': 'OK', 'message': f'Image with id {pk} was successfully deleted'})
+
+
 @bp.route('/users')
 @admin_required
 def users():
@@ -88,7 +117,7 @@ def users():
     return render_template('admin/users.html', **data)
 
 
-@bp.route('/create_superuser', methods=['GET', 'POST'])
+@bp.route('/create-superuser', methods=['GET', 'POST'])
 @admin_required
 def create_superuser():
     db = get_db()
@@ -131,7 +160,7 @@ def create_superuser():
     return render_template('admin/create-superuser.html')
 
 
-@bp.route('/edit_user/<int:pk>', methods=['GET', 'POST'])
+@bp.route('/edit-user/<int:pk>', methods=['GET', 'POST'])
 @admin_required
 def edit_superuser(pk):
     db = get_db()

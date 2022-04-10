@@ -1,0 +1,85 @@
+{% extends 'admin/index.html' %}
+{% block title %}Edit hotel{% endblock %}
+
+{% block body %}
+<div class="content-wrapper">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">Edit {{ hotel['name'] }}</h4>
+      <form class="forms-sample" method="post" enctype=multipart/form-data>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input class="form-control" id="name" name="name" placeholder="Name" type="text" value="{{ hotel['name'] }}">
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <input class="form-control" id="description" name="description" placeholder="Description" type="text" value="{{ hotel['description'] }}"/>
+        </div>
+        <div class="form-group">
+          <label for="location">Location</label>
+          <input class="form-control" id="location" name="location" placeholder="Location" type="text" value="{{ hotel['location'] }}">
+        </div>
+        <div class="form-group">
+          <h5>Images</h5>
+        {% if images|length > 0 %}
+          <table class="table table-hover">
+            <thead>
+            <tr>
+              <th>Images</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for image in images %}
+              <tr>
+                <td>
+                  <a href="{{ url_for('static', filename='uploads/' + image.source) }}">{{ image.source }}</a>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-danger delete-image" data-url="{{ url_for('admin.delete_image', pk=image.id) }}">
+                    <i class="mdi mdi-delete"></i>
+                  </button>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        {% endif %}
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="images">Load new images</label>
+          <input class="form-control" id="images" name="images" type="file" multiple/>
+        </div>
+        <div class="form-group">
+          <input class="float-end btn btn-primary" type="submit" value="Create">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  const delete_buttons = document.querySelectorAll('.delete-image');
+  const csrf_token = "{{ csrf_token() }}"
+  delete_buttons.forEach(button=>{
+    button.addEventListener('click', (e)=>{
+      e.preventDefault();
+      let url = button.dataset.url;
+      fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRFToken': csrf_token,
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response=>response.json())
+        .then(data=>{
+          if(data.status === 'OK') {
+            let row = button.parentNode.parentNode;
+            row.remove();
+            }
+        });
+    });
+  });
+</script>
+{% endblock %}
