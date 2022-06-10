@@ -20,6 +20,7 @@ def create_app(test_config=None):
         def getImages(hotel_id):
             _db = get_db()
             return _db.execute('SELECT * FROM hotel_image WHERE hotel_id=?', (hotel_id,)).fetchall()
+
         return dict(getImages=getImages)
 
     if test_config is None:
@@ -35,7 +36,7 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    def page_not_found(e=None):
+    def page_not_found(_=None):
         return render_template('404.html'), 404
 
     app.register_error_handler(404, page_not_found)

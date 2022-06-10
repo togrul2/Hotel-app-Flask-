@@ -60,13 +60,8 @@ def create_hotel():
             db = get_db()
             db.execute("INSERT INTO hotel(name, description, location) VALUES (?, ? ,?)", (name, description, location))
             if len(images) > 0:
-                hotel_id = db.execute("""
-                    SELECT id
-                    FROM hotel
-                    WHERE name=?
-                    AND description=?
-                    AND location=?
-                """, (name, description, location)).fetchone()[0]
+                hotel_id = db.execute("SELECT id FROM hotel WHERE name=? AND description=? AND location=?",
+                                      (name, description, location)).fetchone()[0]
                 for image in images:
                     if image.filename != '':
                         filename = f'{hotel_id}.{secure_filename(image.filename)}'
@@ -100,7 +95,7 @@ def edit_hotel(pk):
 @bp.route('/delete-image/<int:pk>', methods=['DELETE'])
 def delete_image(pk):
     db = get_db()
-    db.execute('DELETE FROM hotel_image WHERE id=?', (pk, ))
+    db.execute('DELETE FROM hotel_image WHERE id=?', (pk,))
     db.commit()
     return jsonify({'status': 'OK', 'message': f'Image with id {pk} was successfully deleted'})
 

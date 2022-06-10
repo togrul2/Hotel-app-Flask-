@@ -26,7 +26,8 @@ def register():
         if password != confirm_password:
             error = 'Passwords do not match.'
 
-        usernames = [i['upper_username'] for i in db.execute('SELECT upper(username) upper_username FROM user').fetchall()]
+        usernames = [i['upper_username'] for i in
+                     db.execute('SELECT upper(username) upper_username FROM user').fetchall()]
 
         if username.upper() in usernames:
             error = f'User with the username {username} already exists'
